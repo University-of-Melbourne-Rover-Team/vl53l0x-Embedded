@@ -1,0 +1,9 @@
+{
+  "cmake.generator": "Ninja",
+  "cmake.configureArgs": [
+    "-DPICO_SDK_PATH=C:/Users/scott/pico-sdk"
+  ],
+  "files.associations": {
+    "vl53l0x_platform.h": "c"
+  }
+}

@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/i2c.h"
+#include "vl53l0x_api.h"
+#include "vl53.h"
+#include "vl53l0x_api_calibration.h"
+
+#define I2C_PORT     i2c0 // ps=ass these as a parameter
+#define PIN_I2C_SDA  4   // GP4 
+#define PIN_I2C_SCL  5   // GP5
+
+static VL53L0X_Dev_t vl53_dev;
+
+static void sensor_hard_reset(void) {
+#ifdef PIN_XSHUT
+    gpio_init(PIN_XSHUT);
+    gpio_set_dir(PIN_XSHUT, GPIO_OUT);
+    gpio_put(PIN_XSHUT, 0);
+    sleep_ms(10);
+    gpio_put(PIN_XSHUT, 1);
+    sleep_ms(10);
+#else
+#endif
+}
+
+static void vl53_i2c_init_100k(void) { // make it a parameter
+    i2c_init(I2C_PORT, 100 * 1000);  
+    gpio_set_function(PIN_I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(PIN_I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(PIN_I2C_SDA);
+    gpio_pull_up(PIN_I2C_SCL);
+}
+int vl53_run_offset_cal_mm(uint16_t target_mm, int16_t *applied_mm) {
+    FixPoint1616_t cal_dist_q16 = ((FixPoint1616_t)target_mm) << 16;
+    int32_t offset_um = 0;
+
+    VL53L0X_Error st = VL53L0X_perform_offset_calibration(&vl53_dev,
+                              cal_dist_q16, &offset_um);
+    if (st) return -310 - st;
+
+    if (applied_mm) *applied_mm = (int16_t)(offset_um / 1000);
+    return 0;
+}
+int vl53l0x_platform_init(void) {
+    VL53L0X_Error st;
+    uint32_t spad_count = 0;
+    uint8_t is_aperture = 0;
+    uint8_t vhv = 0, phase = 0;
+
+    vl53_i2c_init_100k();
+    sensor_hard_reset();
+    vl53_dev.I2cDevAddr = 0x29; //write another function to do this with a parameter
+                // provide it with XSHUT PIN and dev and addr
+    sleep_ms(10); 
+
+    st = VL53L0X_DataInit(&vl53_dev);
+    if (st) { printf("DataInit=%d\n", st); return -100 - st; }
+
+    st = VL53L0X_StaticInit(&vl53_dev);
+    if (st) { printf("StaticInit=%d\n", st); return -110 - st; }
+
+    st = VL53L0X_PerformRefSpadManagement(&vl53_dev, &spad_count, &is_aperture);
+    if (st) { printf("RefSpad=%d\n", st); return -120 - st; }
+
+    st = VL53L0X_PerformRefCalibration(&vl53_dev, &vhv, &phase);
+    if (st) { printf("RefCal=%d\n", st); return -130 - st; }
+
+    st = VL53L0X_SetDeviceMode(&vl53_dev, VL53L0X_DEVICEMODE_SINGLE_RANGING);
+    if (st) { printf("SetMode=%d\n", st); return -140 - st; }
+
+    st = VL53L0X_SetMeasurementTimingBudgetMicroSeconds(&vl53_dev, 33000);
+    if (st) { printf("TimingBudget=%d\n", st); return -150 - st; }
+
+    return 0;
+}
+
+int vl53_read_mm(uint16_t *mm) {
+    if (!mm) return -1;
+
+    VL53L0X_RangingMeasurementData_t m = {0};
+    VL53L0X_Error st = VL53L0X_PerformSingleRangingMeasurement(&vl53_dev, &m);
+    if (st) {
+        return -200 - st;
+    }
+
+    if (m.RangeStatus != 0) {
+        *mm = 0;
+        return (int)m.RangeStatus;
+    }
+
+    *mm = (uint16_t)m.RangeMilliMeter;
+    return 0;
+}

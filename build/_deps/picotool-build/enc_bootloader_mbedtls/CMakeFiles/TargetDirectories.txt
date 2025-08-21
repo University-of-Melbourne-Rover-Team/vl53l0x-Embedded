@@ -1,0 +1,2 @@
+C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/edit_cache.dir
+C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/rebuild_cache.dir
