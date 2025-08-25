@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
+#include "hardware/gpio.h"
 #include "vl53l0x_api.h"
 #include "vl53.h"
 #include "vl53l0x_api_calibration.h"
@@ -9,6 +10,7 @@
 #define PIN_I2C_SDA  4   // GP4 
 #define PIN_I2C_SCL  5   // GP5
 
+static uint s_gpio1 = 0xFF;   // 0xFF == not set
 static VL53L0X_Dev_t vl53_dev;
 
 static void sensor_hard_reset(void) {
@@ -22,6 +24,45 @@ static void sensor_hard_reset(void) {
 #else
 #endif
 }
+//////////////////////////////////////////////////////////
+int vl53_setup_gpio1(uint gpion) {
+    s_gpio1 = gpion;
+    gpio_init(s_gpio1);
+    gpio_set_dir(s_gpio1, GPIO_IN);
+    gpio_pull_up(s_gpio1); 
+    return 0;
+}
+
+bool vl53_ready_gpio(void) {
+    if (s_gpio1 == 0xFF) return false;  // not configured
+    return gpio_get(s_gpio1) == 0;      // active-LOW means 0 = ready
+}
+// Non-blocking trigger: start one single measurement
+int vl53_start_async(void) {
+    VL53L0X_Error st = VL53L0X_StartMeasurement(&vl53_dev);
+    return st ? (-300 - st) : 0;
+}
+
+// Read the finished measurement and clear the sensor interrupt
+int vl53_read_async_mm(uint16_t *mm) {
+    if (!mm) return -1;
+
+    VL53L0X_RangingMeasurementData_t m = {0};
+    VL53L0X_Error st = VL53L0X_GetRangingMeasurementData(&vl53_dev, &m);
+    if (st) return -200 - st;
+
+    VL53L0X_ClearInterruptMask(&vl53_dev, 0);
+
+    if (m.RangeStatus != 0) {
+        *mm = 0;
+        return (int)m.RangeStatus; 
+    }
+
+    *mm = (uint16_t)m.RangeMilliMeter;
+    return 0;
+}
+
+/////////////////////////////////
 
 static void vl53_i2c_init_100k(void) { // make it a parameter
     i2c_init(I2C_PORT, 100 * 1000);  
