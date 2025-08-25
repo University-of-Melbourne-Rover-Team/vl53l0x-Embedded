@@ -6,9 +6,7 @@
 #include "vl53.h"
 #include "vl53l0x_api_calibration.h"
 
-#define I2C_PORT     i2c0 // ps=ass these as a parameter
-#define PIN_I2C_SDA  4   // GP4 
-#define PIN_I2C_SCL  5   // GP5
+
 
 static uint s_gpio1 = 0xFF;   // 0xFF == not set
 static VL53L0X_Dev_t vl53_dev;
@@ -64,8 +62,8 @@ int vl53_read_async_mm(uint16_t *mm) {
 
 /////////////////////////////////
 
-static void vl53_i2c_init_100k(void) { // make it a parameter
-    i2c_init(I2C_PORT, 100 * 1000);  
+static void vl53_i2c_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t *I2C_port) { // make it a parameter
+    i2c_init(I2C_port, freq * 1000);  
     gpio_set_function(PIN_I2C_SDA, GPIO_FUNC_I2C);
     gpio_set_function(PIN_I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(PIN_I2C_SDA);
@@ -82,13 +80,13 @@ int vl53_run_offset_cal_mm(uint16_t target_mm, int16_t *applied_mm) {
     if (applied_mm) *applied_mm = (int16_t)(offset_um / 1000);
     return 0;
 }
-int vl53l0x_platform_init(void) {
+int vl53l0x_platform_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t *I2C_port) {
     VL53L0X_Error st;
     uint32_t spad_count = 0;
     uint8_t is_aperture = 0;
     uint8_t vhv = 0, phase = 0;
 
-    vl53_i2c_init_100k();
+    vl53_i2c_init(freq, PIN_I2C_SDA, PIN_I2C_SCL, I2C_port);
     sensor_hard_reset();
     vl53_dev.I2cDevAddr = 0x29; //write another function to do this with a parameter
                 // provide it with XSHUT PIN and dev and addr

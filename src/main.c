@@ -5,12 +5,12 @@
 #ifndef VL53_GPIO1_PIN
 #define VL53_GPIO1_PIN 6   // <-- RP2040 pin wired to VL53L0X GPIO1 (active-LOW)
 #endif
-
+//test
 int main() {
     stdio_init_all();
     sleep_ms(1000);
 
-    int rc = vl53l0x_platform_init();
+    int rc = vl53l0x_platform_init(100, 4, 5, i2c0);
     if (rc != 0) {
         printf("VL53 init failed: %d\n", rc);
         while (1) sleep_ms(1000);
