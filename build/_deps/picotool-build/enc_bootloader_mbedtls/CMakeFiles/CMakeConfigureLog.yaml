@@ -1652,8 +1652,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3t8odq"
-      binary: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3t8odq"
+      source: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-l01jyg"
+      binary: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-l01jyg"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
       CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1662,11 +1662,11 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3t8odq'
+        Change Dir: 'C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-l01jyg'
         
-        Run Build Command(s): C:/Users/scott/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe -v cmTC_ffc0b
-        [1/2] "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"  /nologo   /DWIN32 /D_WINDOWS /W3  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\\cmTC_ffc0b.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_ffc0b.dir\\ /FS -c C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c
-        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\cmTC_ffc0b.dir --rc="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\rc.exe" --mt="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\mt.exe" --manifests  -- "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe" /nologo CMakeFiles\\cmTC_ffc0b.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_ffc0b.exe /implib:cmTC_ffc0b.lib /pdb:cmTC_ffc0b.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): C:/Users/scott/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe -v cmTC_0924e
+        [1/2] "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"  /nologo   /DWIN32 /D_WINDOWS /W3  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\\cmTC_0924e.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_0924e.dir\\ /FS -c C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\cmTC_0924e.dir --rc="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\rc.exe" --mt="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\mt.exe" --manifests  -- "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe" /nologo CMakeFiles\\cmTC_0924e.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_0924e.exe /implib:cmTC_0924e.lib /pdb:cmTC_0924e.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -
@@ -1694,8 +1694,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3dnrkq"
-      binary: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3dnrkq"
+      source: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-950s70"
+      binary: "C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-950s70"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1705,11 +1705,11 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-3dnrkq'
+        Change Dir: 'C:/Users/scott/urt-vl53l0x/build/_deps/picotool-build/enc_bootloader_mbedtls/CMakeFiles/CMakeScratch/TryCompile-950s70'
         
-        Run Build Command(s): C:/Users/scott/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe -v cmTC_2e834
-        [1/2] "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"  /nologo /TP   /DWIN32 /D_WINDOWS /W3 /GR /EHsc  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\\cmTC_2e834.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_2e834.dir\\ /FS -c C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp
-        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\cmTC_2e834.dir --rc="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\rc.exe" --mt="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\mt.exe" --manifests  -- "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe" /nologo CMakeFiles\\cmTC_2e834.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_2e834.exe /implib:cmTC_2e834.lib /pdb:cmTC_2e834.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): C:/Users/scott/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe -v cmTC_3d8ef
+        [1/2] "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"  /nologo /TP   /DWIN32 /D_WINDOWS /W3 /GR /EHsc  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\\cmTC_3d8ef.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_3d8ef.dir\\ /FS -c C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Users\\scott\\Documents\\cmake-4.1.0-windows-x86_64\\cmake-4.1.0-windows-x86_64\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\cmTC_3d8ef.dir --rc="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\rc.exe" --mt="C:\\PROGRA~2\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\mt.exe" --manifests  -- "C:\\PROGRA~2\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe" /nologo CMakeFiles\\cmTC_3d8ef.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_3d8ef.exe /implib:cmTC_3d8ef.lib /pdb:cmTC_3d8ef.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -
