@@ -1,66 +1,79 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 #include "vl53l0x_api.h"
 #include "vl53.h"
 #include "vl53l0x_api_calibration.h"
+#include "hardware/structs/io_bank0.h" 
 
 
 
-static uint s_gpio1 = 0xFF;   // 0xFF == not set
 static VL53L0X_Dev_t vl53_dev;
+static uint s_xshut = 0xFF;           // 0xFF = not configured
 
-static void sensor_hard_reset(void) {
-#ifdef PIN_XSHUT
-    gpio_init(PIN_XSHUT);
-    gpio_set_dir(PIN_XSHUT, GPIO_OUT);
-    gpio_put(PIN_XSHUT, 0);
-    sleep_ms(10);
-    gpio_put(PIN_XSHUT, 1);
-    sleep_ms(10);
-#else
-#endif
-}
-//////////////////////////////////////////////////////////
-int vl53_setup_gpio1(uint gpion) {
-    s_gpio1 = gpion;
-    gpio_init(s_gpio1);
-    gpio_set_dir(s_gpio1, GPIO_IN);
-    gpio_pull_up(s_gpio1); 
-    return 0;
+void vl53_xshut_set(uint xshut_pin, bool enabled) {
+    // XSHUT is active-LOW: LOW = shutdown, HIGH = run
+    gpio_init(xshut_pin);
+    gpio_set_dir(xshut_pin, GPIO_OUT);
+    gpio_put(xshut_pin, enabled ? 1 : 0);
 }
 
-bool vl53_ready_gpio(void) {
-    if (s_gpio1 == 0xFF) return false;  // not configured
-    return gpio_get(s_gpio1) == 0;      // active-LOW means 0 = ready
-}
-// Non-blocking trigger: start one single measurement
-int vl53_start_async(void) {
-    VL53L0X_Error st = VL53L0X_StartMeasurement(&vl53_dev);
-    return st ? (-300 - st) : 0;
+void vl53_xshut_low(void) {
+    if (s_xshut != 0xFF) gpio_put(s_xshut, 0);
 }
 
-// Read the finished measurement and clear the sensor interrupt
-int vl53_read_async_mm(uint16_t *mm) {
-    if (!mm) return -1;
+void vl53_xshut_high(void) {
+    if (s_xshut != 0xFF) gpio_put(s_xshut, 1);
+}
 
-    VL53L0X_RangingMeasurementData_t m = {0};
-    VL53L0X_Error st = VL53L0X_GetRangingMeasurementData(&vl53_dev, &m);
-    if (st) return -200 - st;
+// Change the I²C address at runtime
+// vl53.c
+int vl53_set_address(VL53L0X_Dev_t *dev, uint8_t new_addr_7bit) {
+    VL53L0X_StopMeasurement(dev);
+    VL53L0X_ClearInterruptMask(dev, 0);
+    sleep_ms(2);
 
-    VL53L0X_ClearInterruptMask(&vl53_dev, 0);
+    VL53L0X_SetDeviceAddress(dev, (uint8_t)(new_addr_7bit << 1));
+    dev->I2cDevAddr = new_addr_7bit;
 
-    if (m.RangeStatus != 0) {
-        *mm = 0;
-        return (int)m.RangeStatus; 
-    }
-
-    *mm = (uint16_t)m.RangeMilliMeter;
+    VL53L0X_StartMeasurement(dev);
     return 0;
 }
 
 /////////////////////////////////
+
+/*Xshut helper
+int vl53_setup_xshut(uint pin) {
+    s_xshut = pin;
+    gpio_init(s_xshut);
+    gpio_set_dir(s_xshut, GPIO_OUT);
+    // default released (sensor ON)
+    gpio_put(s_xshut, 1);
+    sleep_ms(5);
+    return 0;
+}
+
+void vl53_xshut_low(void) {
+    if (s_xshut != 0xFF) gpio_put(s_xshut, 0);
+}
+
+void vl53_xshut_high(void) {
+    if (s_xshut != 0xFF) gpio_put(s_xshut, 1);
+}
+
+int vl53_reset_and_reinit(void) {
+    if (s_xshut == 0xFF) return -901; // not configured
+    // hard reset pulse
+    gpio_put(s_xshut, 0);
+    sleep_ms(10);
+    gpio_put(s_xshut, 1);
+    sleep_ms(10);
+    if (!s_last_i2c) return -902; // init was never called
+    return vl53l0x_platform_init(s_last_freq_khz, s_last_sda, s_last_scl, s_last_i2c);
+}
+*/////////////////
 
 static void vl53_i2c_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t *I2C_port) { // make it a parameter
     i2c_init(I2C_port, freq * 1000);  
@@ -69,56 +82,28 @@ static void vl53_i2c_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t 
     gpio_pull_up(PIN_I2C_SDA);
     gpio_pull_up(PIN_I2C_SCL);
 }
-int vl53_run_offset_cal_mm(uint16_t target_mm, int16_t *applied_mm) {
-    FixPoint1616_t cal_dist_q16 = ((FixPoint1616_t)target_mm) << 16;
-    int32_t offset_um = 0;
 
-    VL53L0X_Error st = VL53L0X_perform_offset_calibration(&vl53_dev,
-                              cal_dist_q16, &offset_um);
-    if (st) return -310 - st;
+int vl53_read_mm(VL53L0X_Dev_t *dev, uint16_t *mm, uint8_t i2c_addr) {
+    if (!mm || !dev) return -1;
 
-    if (applied_mm) *applied_mm = (int16_t)(offset_um / 1000);
-    return 0;
-}
-int vl53l0x_platform_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t *I2C_port) {
-    VL53L0X_Error st;
-    uint32_t spad_count = 0;
-    uint8_t is_aperture = 0;
-    uint8_t vhv = 0, phase = 0;
-
-    vl53_i2c_init(freq, PIN_I2C_SDA, PIN_I2C_SCL, I2C_port);
-    sensor_hard_reset();
-    vl53_dev.I2cDevAddr = 0x29; //write another function to do this with a parameter
-                // provide it with XSHUT PIN and dev and addr
-    sleep_ms(10); 
-
-    st = VL53L0X_DataInit(&vl53_dev);
-    if (st) { printf("DataInit=%d\n", st); return -100 - st; }
-
-    st = VL53L0X_StaticInit(&vl53_dev);
-    if (st) { printf("StaticInit=%d\n", st); return -110 - st; }
-
-    st = VL53L0X_PerformRefSpadManagement(&vl53_dev, &spad_count, &is_aperture);
-    if (st) { printf("RefSpad=%d\n", st); return -120 - st; }
-
-    st = VL53L0X_PerformRefCalibration(&vl53_dev, &vhv, &phase);
-    if (st) { printf("RefCal=%d\n", st); return -130 - st; }
-
-    st = VL53L0X_SetDeviceMode(&vl53_dev, VL53L0X_DEVICEMODE_SINGLE_RANGING);
-    if (st) { printf("SetMode=%d\n", st); return -140 - st; }
-
-    st = VL53L0X_SetMeasurementTimingBudgetMicroSeconds(&vl53_dev, 33000);
-    if (st) { printf("TimingBudget=%d\n", st); return -150 - st; }
-
-    return 0;
-}
-
-int vl53_read_mm(uint16_t *mm) {
-    if (!mm) return -1;
+    // Temporarily store the original address
+    uint8_t original_addr = dev->I2cDevAddr;
+    
+    // Set the device to use the specified address
+    dev->I2cDevAddr = i2c_addr;
 
     VL53L0X_RangingMeasurementData_t m = {0};
-    VL53L0X_Error st = VL53L0X_PerformSingleRangingMeasurement(&vl53_dev, &m);
+    VL53L0X_Error st = VL53L0X_GetRangingMeasurementData(dev, &m);
+    VL53L0X_ClearInterruptMask(dev, 0);
+    
+    // Restore the original address
+    dev->I2cDevAddr = original_addr;
+    
     if (st) {
+        // Add debug info for common errors
+        if (st == 20) {
+            printf("DEBUG: No sensor responding at address 0x%02X (I2C error)\n", i2c_addr);
+        }
         return -200 - st;
     }
 

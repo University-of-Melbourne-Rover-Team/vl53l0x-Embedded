@@ -6,7 +6,6 @@
 #define I2C_SDA_PIN 4
 #define I2C_SCL_PIN 5
 
-
 static void platform_delay_ms(uint32_t ms) {
     sleep_ms(ms);
 }

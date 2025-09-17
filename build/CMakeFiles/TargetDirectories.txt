@@ -1,4 +1,6 @@
 C:/Users/scott/urt-vl53l0x/build/CMakeFiles/urt_vl53.dir
+C:/Users/scott/urt-vl53l0x/build/CMakeFiles/picotoolForceReconfigure.dir
+C:/Users/scott/urt-vl53l0x/build/CMakeFiles/picotoolBuild.dir
 C:/Users/scott/urt-vl53l0x/build/CMakeFiles/edit_cache.dir
 C:/Users/scott/urt-vl53l0x/build/CMakeFiles/rebuild_cache.dir
 C:/Users/scott/urt-vl53l0x/build/pico-sdk/CMakeFiles/edit_cache.dir

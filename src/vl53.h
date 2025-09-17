@@ -2,21 +2,22 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "hardware/i2c.h"
-// pass freq in kHz, SDA pin, SCL pin, and which I2C peripheral (i2c0 or i2c1)
-int vl53l0x_platform_init(int freq, int PIN_I2C_SDA,int PIN_I2C_SCL, i2c_inst_t *I2C_port);
+#include "vl53l0x_api.h"
 
-int vl53_read_mm(uint16_t *mm);
-int vl53_run_offset_cal_mm(uint16_t target_mm, int16_t *applied_mm);
-int vl53_apply_fixed_offset_mm(int16_t offset_mm_mm);
+// GPIO control for XSHUT (power/reset)
+void vl53_xshut_set(uint xshut_pin, bool enabled);
+void vl53_xshut_low(void);
+void vl53_xshut_high(void);
 
-// Configure GPIO1 (data-ready) pin once after init (pass your RP2040 pin)
-int vl53_setup_gpio1(uint gpion);
+// Address change function
+int vl53_set_address(VL53L0X_Dev_t *dev, uint8_t new_addr);
 
-// Non-blocking trigger: start one single measurement
-int vl53_start_async(void);
+// Reading function with address parameter
+int vl53_read_mm(VL53L0X_Dev_t *dev, uint16_t *mm, uint8_t i2c_addr);
+/* XSHUT control
+int  vl53_setup_xshut(uint pin);    // call once to choose the Pico pin that drives XSHUT
+void vl53_xshut_low(void);          // hold sensor in hardware reset (XSHUT = 0)
+void vl53_xshut_high(void);         // release reset (XSHUT = 1)
+int  vl53_reset_and_reinit(void);   // pulse XSHUT and rerun the ST init sequence
+*/
 
-// Optional: quick readiness check via the GPIO1 pin
-bool vl53_ready_gpio(void);
-
-// Read the finished measurement and clear the sensor interrupt
-int vl53_read_async_mm(uint16_t *mm);
